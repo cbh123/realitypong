@@ -8,6 +8,7 @@
         body {
             background-color: #000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -15,13 +16,8 @@
             font-family: 'Courier New', Courier, monospace;
             color: #0f0;
         }
-        #startScreen, #gameScreen {
-            text-align: center;
-        }
-        canvas {
-            border: 2px solid #0f0;
-        }
         header {
+            text-align: center;
             margin-bottom: 20px;
         }
         h1 {
@@ -29,6 +25,12 @@
         }
         #instructions {
             margin-top: 0;
+        }
+        #startScreen, #gameScreen {
+            text-align: center;
+        }
+        canvas {
+            border: 2px solid #0f0;
         }
         #startButton {
             font-size: 24px;
@@ -52,11 +54,11 @@
     </style>
 </head>
 <body>
+    <header>
+        <h1>REALITY PONG</h1>
+        <p id="instructions">Play Pong with your hands!</p>
+    </header>
     <div id="startScreen">
-        <header>
-            <h1>REALITY PONG</h1>
-            <p id="instructions">Play Pong with your hands!</p>
-        </header>
         <button id="startButton">START GAME</button>
     </div>
     <div id="gameScreen" style="display: none;">

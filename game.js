@@ -102,7 +102,7 @@ const startButton = document.getElementById('startButton');
 startButton.addEventListener('click', startGame);
 
 function startGame() {
-    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('startButton').style.display = 'none';
     document.getElementById('gameScreen').style.display = 'block';
     
     playStartSound();
