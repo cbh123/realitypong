@@ -53,6 +53,7 @@ function updateGame() {
     // Ball collision with top and bottom walls
     if (ballY < 0 || ballY > canvas.height) {
         ballSpeedY = -ballSpeedY;
+        playBounceSound();
     }
 
     // Ball collision with paddles
@@ -61,14 +62,17 @@ function updateGame() {
         (ballX > canvas.width - paddleWidth && ballY > rightPaddleY && ballY < rightPaddleY + paddleHeight)
     ) {
         ballSpeedX = -ballSpeedX;
+        playBounceSound();
     }
 
     // Score points
     if (ballX < 0) {
         player2Score++;
+        playScoreSound();
         resetBall();
     } else if (ballX > canvas.width) {
         player1Score++;
+        playScoreSound();
         resetBall();
     }
 
@@ -81,10 +85,47 @@ function resetBall() {
     ballSpeedX = -ballSpeedX;
 }
 
+// Play start sound when the game begins
+video.addEventListener('loadedmetadata', () => {
+    playStartSound();
+    gameLoop();
+    setInterval(trackHands, 100); // Track hands every 100ms
+});
+
 function gameLoop() {
     updateGame();
     drawGame();
     requestAnimationFrame(gameLoop);
+}
+
+// Audio context
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(frequency, duration) {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.value = frequency;
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.start();
+    gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+    oscillator.stop(audioContext.currentTime + duration);
+}
+
+function playBounceSound() {
+    playSound(500, 0.1);
+}
+
+function playScoreSound() {
+    playSound(700, 0.15);
+}
+
+function playStartSound() {
+    playSound(400, 0.5);
 }
 
 // Simple hand tracking
