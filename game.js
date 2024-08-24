@@ -126,10 +126,10 @@ function trackHands() {
     }
 
     if (leftCount > 0) {
-        leftPaddleY = (leftHandY / leftCount) * (canvas.height / videoHeight) - paddleHeight / 2;
+        rightPaddleY = (leftHandY / leftCount) * (canvas.height / videoHeight) - paddleHeight / 2;
     }
     if (rightCount > 0) {
-        rightPaddleY = (rightHandY / rightCount) * (canvas.height / videoHeight) - paddleHeight / 2;
+        leftPaddleY = (rightHandY / rightCount) * (canvas.height / videoHeight) - paddleHeight / 2;
     }
 
     // Ensure paddles stay within canvas bounds
