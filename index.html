@@ -18,14 +18,26 @@
         canvas {
             border: 2px solid #0f0;
         }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        #instructions {
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
     <div>
-        <h1>REALITY PONG</h1>
+        <header>
+            <h1>REALITY PONG</h1>
+            <p id="instructions">Move your left hand up and down to control the left paddle. Move your right hand to control the right paddle.</p>
+        </header>
         <canvas id="gameCanvas" width="800" height="400"></canvas>
         <video id="video" style="position: absolute; bottom: 10px; right: 10px; width: 160px; height: 120px;"></video>
-        <p id="instructions">Move your left hand up and down to control the left paddle. Move your right hand to control the right paddle.</p>
         <p id="score">Player 1: 0 | Player 2: 0</p>
     </div>
     <script src="game.js"></script>
