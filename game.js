@@ -10,6 +10,14 @@ const paddleWidth = 10;
 const paddleHeight = 100;
 let leftPaddleY = canvas.height / 2 - paddleHeight / 2;
 let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
+let leftPaddleTargetY = leftPaddleY;
+let rightPaddleTargetY = rightPaddleY;
+const paddleSmoothingFactor = 0.2; // Adjust this value to change smoothing speed (0-1)
+
+function smoothPaddleMovement() {
+    leftPaddleY += (leftPaddleTargetY - leftPaddleY) * paddleSmoothingFactor;
+    rightPaddleY += (rightPaddleTargetY - rightPaddleY) * paddleSmoothingFactor;
+}
 
 const ballSize = 10;
 let ballX = canvas.width / 2;
@@ -97,6 +105,7 @@ video.addEventListener('loadedmetadata', () => {
 });
 
 function gameLoop() {
+    smoothPaddleMovement();
     updateGame();
     drawGame();
     requestAnimationFrame(gameLoop);
@@ -171,15 +180,15 @@ function trackHands() {
     }
 
     if (leftCount > 0) {
-        rightPaddleY = (leftHandY / leftCount) * (canvas.height / videoHeight) - paddleHeight / 2;
+        rightPaddleTargetY = (leftHandY / leftCount) * (canvas.height / videoHeight) - paddleHeight / 2;
     }
     if (rightCount > 0) {
-        leftPaddleY = (rightHandY / rightCount) * (canvas.height / videoHeight) - paddleHeight / 2;
+        leftPaddleTargetY = (rightHandY / rightCount) * (canvas.height / videoHeight) - paddleHeight / 2;
     }
 
-    // Ensure paddles stay within canvas bounds
-    leftPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddleY));
-    rightPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddleY));
+    // Ensure paddle targets stay within canvas bounds
+    leftPaddleTargetY = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddleTargetY));
+    rightPaddleTargetY = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddleTargetY));
 }
 
 // Start the webcam
