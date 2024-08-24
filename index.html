@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Hand-Controlled Pong</title>
+    <style>
+        body {
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            color: #0f0;
+        }
+        canvas {
+            border: 2px solid #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Retro Hand-Controlled Pong</h1>
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+        <video id="video" style="display: none;"></video>
+        <p id="instructions">Move your left hand up and down to control the left paddle. Move your right hand to control the right paddle.</p>
+        <p id="score">Player 1: 0 | Player 2: 0</p>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
+
