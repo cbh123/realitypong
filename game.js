@@ -97,12 +97,30 @@ function resetBall() {
     ballSpeedY = (Math.random() > 0.5 ? 1 : -1) * 5 * speedMultiplier;
 }
 
-// Play start sound when the game begins
-video.addEventListener('loadedmetadata', () => {
+const startButton = document.getElementById('startButton');
+
+startButton.addEventListener('click', startGame);
+
+function startGame() {
+    startButton.style.display = 'none';
+    canvas.style.display = 'block';
+    video.style.display = 'block';
+    scoreElement.style.display = 'block';
+    
     playStartSound();
+    resetGame();
     gameLoop();
     setInterval(trackHands, 200); // Track hands every 200ms (slower)
-});
+}
+
+function resetGame() {
+    player1Score = 0;
+    player2Score = 0;
+    resetBall();
+    leftPaddleY = canvas.height / 2 - paddleHeight / 2;
+    rightPaddleY = canvas.height / 2 - paddleHeight / 2;
+    scoreElement.textContent = `Player 1: 0 | Player 2: 0`;
+}
 
 function gameLoop() {
     smoothPaddleMovement();
@@ -110,6 +128,16 @@ function gameLoop() {
     drawGame();
     requestAnimationFrame(gameLoop);
 }
+
+// Initialize webcam
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then((stream) => {
+        video.srcObject = stream;
+        video.play();
+    })
+    .catch((err) => {
+        console.error("Error accessing the webcam", err);
+    });
 
 // Audio context
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();

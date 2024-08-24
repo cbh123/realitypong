@@ -36,9 +36,10 @@
             <h1>REALITY PONG</h1>
             <p id="instructions">Play Pong with your hands!</p>
         </header>
-        <canvas id="gameCanvas" width="800" height="400"></canvas>
-        <video id="video" style="position: absolute; bottom: 10px; right: 10px; width: 160px; height: 120px; transform: scaleX(-1);"></video>
-        <p id="score">Player 1: 0 | Player 2: 0</p>
+        <button id="startButton" style="font-size: 24px; padding: 10px 20px; background-color: #0f0; color: #000; border: none; cursor: pointer;">START GAME</button>
+        <canvas id="gameCanvas" width="800" height="400" style="display: none;"></canvas>
+        <video id="video" style="position: absolute; bottom: 10px; right: 10px; width: 160px; height: 120px; transform: scaleX(-1); display: none;"></video>
+        <p id="score" style="display: none;">Player 1: 0 | Player 2: 0</p>
     </div>
     <script src="game.js"></script>
 </body>
