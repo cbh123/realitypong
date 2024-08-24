@@ -89,11 +89,15 @@ function gameLoop() {
 
 // Simple hand tracking
 function trackHands() {
-    const canvasElement = canvas;
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+    const canvasElement = document.createElement('canvas');
+    canvasElement.width = videoWidth;
+    canvasElement.height = videoHeight;
     const canvasCtx = canvasElement.getContext('2d');
 
-    canvasCtx.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-    const imageData = canvasCtx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage(video, 0, 0, videoWidth, videoHeight);
+    const imageData = canvasCtx.getImageData(0, 0, videoWidth, videoHeight);
     const data = imageData.data;
 
     let leftHandY = 0;
@@ -108,10 +112,10 @@ function trackHands() {
 
         // Simple skin color detection
         if (r > 95 && g > 40 && b > 20 && r > g && r > b && r - Math.min(g, b) > 15 && Math.abs(r - g) > 15) {
-            const y = Math.floor((i / 4) / canvasElement.width);
-            const x = (i / 4) % canvasElement.width;
+            const y = Math.floor((i / 4) / videoWidth);
+            const x = (i / 4) % videoWidth;
 
-            if (x < canvasElement.width / 2) {
+            if (x < videoWidth / 2) {
                 leftHandY += y;
                 leftCount++;
             } else {
@@ -122,17 +126,15 @@ function trackHands() {
     }
 
     if (leftCount > 0) {
-        leftPaddleY = (leftHandY / leftCount) * (canvas.height / video.height) - paddleHeight / 2;
+        leftPaddleY = (leftHandY / leftCount) * (canvas.height / videoHeight) - paddleHeight / 2;
     }
     if (rightCount > 0) {
-        rightPaddleY = (rightHandY / rightCount) * (canvas.height / video.height) - paddleHeight / 2;
+        rightPaddleY = (rightHandY / rightCount) * (canvas.height / videoHeight) - paddleHeight / 2;
     }
 
     // Ensure paddles stay within canvas bounds
     leftPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddleY));
     rightPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddleY));
-
-    requestAnimationFrame(trackHands);
 }
 
 // Start the webcam
@@ -146,7 +148,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
     });
 
 video.addEventListener('loadedmetadata', () => {
-    trackHands();
     gameLoop();
+    setInterval(trackHands, 100); // Track hands every 100ms
 });
 
