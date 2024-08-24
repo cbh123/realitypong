@@ -15,11 +15,13 @@
             font-family: 'Courier New', Courier, monospace;
             color: #0f0;
         }
+        #startScreen, #gameScreen {
+            text-align: center;
+        }
         canvas {
             border: 2px solid #0f0;
         }
         header {
-            text-align: center;
             margin-bottom: 20px;
         }
         h1 {
@@ -29,10 +31,6 @@
             margin-top: 0;
         }
         #startButton {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             font-size: 24px;
             padding: 10px 20px;
             background-color: #0f0;
@@ -40,18 +38,31 @@
             border: none;
             cursor: pointer;
         }
+        #video {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 160px;
+            height: 120px;
+            transform: scaleX(-1);
+        }
+        #score {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-    <div>
+    <div id="startScreen">
         <header>
             <h1>REALITY PONG</h1>
             <p id="instructions">Play Pong with your hands!</p>
         </header>
         <button id="startButton">START GAME</button>
-        <canvas id="gameCanvas" width="800" height="400" style="display: none;"></canvas>
-        <video id="video" style="position: absolute; bottom: 10px; right: 10px; width: 160px; height: 120px; transform: scaleX(-1); display: none;"></video>
-        <p id="score" style="display: none;">Player 1: 0 | Player 2: 0</p>
+    </div>
+    <div id="gameScreen" style="display: none;">
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+        <video id="video"></video>
+        <p id="score">Player 1: 0 | Player 2: 0</p>
     </div>
     <script src="game.js"></script>
 </body>

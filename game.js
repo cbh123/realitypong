@@ -102,10 +102,8 @@ const startButton = document.getElementById('startButton');
 startButton.addEventListener('click', startGame);
 
 function startGame() {
-    startButton.style.display = 'none';
-    canvas.style.display = 'block';
-    video.style.display = 'block';
-    scoreElement.style.display = 'block';
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
     
     playStartSound();
     resetGame();
