@@ -14,8 +14,9 @@ let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
 const ballSize = 10;
 let ballX = canvas.width / 2;
 let ballY = canvas.height / 2;
-let ballSpeedX = 5;
-let ballSpeedY = 5;
+const speedMultiplier = 0.5; // New variable for easy speed adjustment
+let ballSpeedX = 5 * speedMultiplier;
+let ballSpeedY = 5 * speedMultiplier;
 
 function drawRect(x, y, width, height, color) {
     ctx.fillStyle = color;
@@ -83,13 +84,16 @@ function resetBall() {
     ballX = canvas.width / 2;
     ballY = canvas.height / 2;
     ballSpeedX = -ballSpeedX;
+    // Ensure the ball speed is correct after reset
+    ballSpeedX = Math.sign(ballSpeedX) * 5 * speedMultiplier;
+    ballSpeedY = (Math.random() > 0.5 ? 1 : -1) * 5 * speedMultiplier;
 }
 
 // Play start sound when the game begins
 video.addEventListener('loadedmetadata', () => {
     playStartSound();
     gameLoop();
-    setInterval(trackHands, 100); // Track hands every 100ms
+    setInterval(trackHands, 200); // Track hands every 200ms (slower)
 });
 
 function gameLoop() {
