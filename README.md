@@ -1,8 +1,10 @@
 # REALITY PONG
 
-This project was developed using [melty.sh](https://melty.sh), an AI code editor.
+This project was made with [melty.sh](https://melty.sh), an AI code editor.
 
 REALITY PONG is an interactive, webcam-based version of the classic Pong game. Players control their paddles using hand movements captured by their webcam, creating an immersive and fun gaming experience.
+
+Play at [RealityPong.com](https://realitypong.com)
 
 ## Features
 
