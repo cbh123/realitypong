@@ -141,6 +141,33 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
+function drawDebugInfo(leftHandY, rightHandY) {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = '14px Arial';
+
+    // Draw left hand position
+    if (leftHandY !== null) {
+        const leftHandCanvasY = (leftHandY / video.videoHeight) * canvas.height;
+        ctx.fillText(`Left Hand: ${Math.round(leftHandCanvasY)}`, 10, 20);
+        ctx.beginPath();
+        ctx.arc(paddleWidth, leftHandCanvasY, 5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Draw right hand position
+    if (rightHandY !== null) {
+        const rightHandCanvasY = (rightHandY / video.videoHeight) * canvas.height;
+        ctx.fillText(`Right Hand: ${Math.round(rightHandCanvasY)}`, canvas.width - 150, 20);
+        ctx.beginPath();
+        ctx.arc(canvas.width - paddleWidth, rightHandCanvasY, 5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Draw paddle positions
+    ctx.fillText(`Left Paddle: ${Math.round(leftPaddleY)}`, 10, 40);
+    ctx.fillText(`Right Paddle: ${Math.round(rightPaddleY)}`, canvas.width - 150, 40);
+}
+
 // Initialize webcam
 navigator.mediaDevices.getUserMedia({ video: true })
     .then((stream) => {
@@ -209,7 +236,8 @@ function trackHands() {
             const y = Math.floor((i / 4) / videoWidth);
             const x = (i / 4) % videoWidth;
 
-            if (x < videoWidth / 2) {
+            // Account for mirrored video
+            if (x > videoWidth / 2) {
                 leftHandY += y;
                 leftCount++;
             } else {
@@ -219,16 +247,20 @@ function trackHands() {
         }
     }
 
+    // Calculate paddle positions based on hand positions
     if (leftCount > 0) {
-        rightPaddleTargetY = (leftHandY / leftCount) * (canvas.height / videoHeight) - paddleHeight / 2;
+        leftPaddleTargetY = (leftHandY / leftCount) * (canvas.height / videoHeight) - paddleHeight / 2;
     }
     if (rightCount > 0) {
-        leftPaddleTargetY = (rightHandY / rightCount) * (canvas.height / videoHeight) - paddleHeight / 2;
+        rightPaddleTargetY = (rightHandY / rightCount) * (canvas.height / videoHeight) - paddleHeight / 2;
     }
 
     // Ensure paddle targets stay within canvas bounds
     leftPaddleTargetY = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddleTargetY));
     rightPaddleTargetY = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddleTargetY));
+
+    // Debug visualization
+    drawDebugInfo(leftCount > 0 ? leftHandY / leftCount : null, rightCount > 0 ? rightHandY / rightCount : null);
 }
 
 // Start the webcam
