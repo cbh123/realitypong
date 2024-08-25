@@ -200,8 +200,18 @@ function playStartSound() {
 
 // Simplified hand tracking
 function trackHands() {
+    console.log('trackHands called'); // Debug log
+
     const videoWidth = video.videoWidth;
     const videoHeight = video.videoHeight;
+
+    if (videoWidth === 0 || videoHeight === 0) {
+        console.log('Video dimensions are zero. Video might not be ready.'); // Debug log
+        return;
+    }
+
+    console.log(`Video dimensions: ${videoWidth}x${videoHeight}`); // Debug log
+
     const canvasElement = document.createElement('canvas');
     canvasElement.width = videoWidth;
     canvasElement.height = videoHeight;
@@ -213,6 +223,7 @@ function trackHands() {
 
     let leftHandY = videoHeight;
     let rightHandY = videoHeight;
+    let skinPixelsDetected = 0; // Debug counter
 
     for (let y = 0; y < videoHeight; y++) {
         for (let x = 0; x < videoWidth; x++) {
@@ -223,6 +234,7 @@ function trackHands() {
 
             // Simple skin color detection
             if (r > 95 && g > 40 && b > 20 && r > g && r > b && r - Math.min(g, b) > 15 && Math.abs(r - g) > 15) {
+                skinPixelsDetected++; // Debug counter
                 // Account for mirrored video
                 if (x < videoWidth / 2 && y < leftHandY) {
                     leftHandY = y;
@@ -233,6 +245,9 @@ function trackHands() {
         }
     }
 
+    console.log(`Skin-colored pixels detected: ${skinPixelsDetected}`); // Debug log
+    console.log(`Left hand Y: ${leftHandY}, Right hand Y: ${rightHandY}`); // Debug log
+
     // Update paddle positions directly based on hand positions
     leftPaddleY = (leftHandY / videoHeight) * canvas.height - paddleHeight / 2;
     rightPaddleY = (rightHandY / videoHeight) * canvas.height - paddleHeight / 2;
@@ -240,6 +255,8 @@ function trackHands() {
     // Ensure paddle positions stay within canvas bounds
     leftPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddleY));
     rightPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddleY));
+
+    console.log(`Updated paddle positions - Left: ${leftPaddleY}, Right: ${rightPaddleY}`); // Debug log
 
     // Debug visualization
     drawDebugInfo((leftHandY / videoHeight) * canvas.height, (rightHandY / videoHeight) * canvas.height);
