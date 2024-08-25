@@ -1,101 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>REALITY PONG</title>
     <style>
-        body {
-            background-color: #000;
-            margin: 0;
-            padding: 0;
-            font-family: 'Courier New', Courier, monospace;
-            color: #0f0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            text-align: center;
-            padding: 10px 0;
-            z-index: 10;
-        }
-        h1 {
-            margin: 0;
-        }
-        #instructions {
-            margin: 5px 0;
-        }
-        #startScreen {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-        }
-        #gameScreen {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-        }
-        #gameContainer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
-        }
-        #video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
-        #startButton {
-            font-size: 24px;
-            padding: 10px 20px;
-            background-color: #0f0;
-            color: #000;
-            border: none;
-            cursor: pointer;
-        }
-        #score {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            z-index: 10;
-        }
+      body {
+        background-color: #000;
+        margin: 0;
+        padding: 0;
+        font-family: "Courier New", Courier, monospace;
+        color: #0f0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        text-align: center;
+        padding: 10px 0;
+        z-index: 10;
+      }
+      h1 {
+        margin: 0;
+      }
+      #instructions {
+        margin: 5px 0;
+      }
+      #startScreen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+      }
+      #gameScreen {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+      }
+      #gameContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+      }
+      #video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scaleX(-1);
+      }
+      #startButton {
+        font-size: 24px;
+        padding: 10px 20px;
+        background-color: #0f0;
+        color: #000;
+        border: none;
+        cursor: pointer;
+      }
+      #score {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        z-index: 10;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <h1>REALITY PONG</h1>
-        <p id="instructions">Play Pong with your hands!</p>
+      <h1>REALITY PONG (Made by <a href="https://melty.sh">Melty</a>)</h1>
+      <p id="instructions">Play Pong with your hands!</p>
     </header>
     <div id="startScreen">
-        <button id="startButton">START GAME</button>
+      <button id="startButton">START GAME</button>
     </div>
-    <div id="gameScreen" style="display: none;">
-        <div id="gameContainer">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="gameCanvas"></canvas>
-        </div>
-        <div id="score">Player 1: 0 | Player 2: 0</div>
+    <div id="gameScreen" style="display: none">
+      <div id="gameContainer">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="gameCanvas"></canvas>
+      </div>
+      <div id="score">Player 1: 0 | Player 2: 0</div>
     </div>
     <script src="game.js"></script>
-</body>
+  </body>
 </html>
-
