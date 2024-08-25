@@ -95,6 +95,12 @@
         border: none;
         cursor: pointer;
       }
+      #demoVideo {
+        display: block;
+        margin: 20px auto;
+        max-width: 100%;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+      }
       #score {
         position: absolute;
         bottom: 10px;
@@ -119,6 +125,7 @@
           <li>Your hands should be clearly visible to the camera.</li>
         </ul>
       </div>
+      <video id="demoVideo" src="./realitypong.mp4" controls loop style="width: 100%; max-width: 600px; margin: 20px 0;"></video>
       <button id="startButton">START GAME</button>
     </div>
     <div id="gameScreen" style="display: none">
