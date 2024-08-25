@@ -21,7 +21,7 @@ let leftPaddleY = canvas.height / 2 - paddleHeight / 2;
 let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
 let leftPaddleTargetY = leftPaddleY;
 let rightPaddleTargetY = rightPaddleY;
-const paddleSmoothingFactor = 0.2;
+const paddleSmoothingFactor = 0.3;
 
 function smoothPaddleMovement() {
     leftPaddleY += (leftPaddleTargetY - leftPaddleY) * paddleSmoothingFactor;
@@ -240,7 +240,7 @@ function trackHands() {
             const x = (i / 4) % videoWidth;
 
             // Account for mirrored video
-            if (x > videoWidth / 2) {
+            if (x < videoWidth / 2) {
                 leftHandY += y;
                 leftCount++;
             } else {
@@ -252,10 +252,12 @@ function trackHands() {
 
     // Calculate paddle positions based on hand positions
     if (leftCount > 0) {
-        leftPaddleTargetY = (leftHandY / leftCount) * (canvas.height / videoHeight) - paddleHeight / 2;
+        const leftHandAvg = leftHandY / leftCount;
+        leftPaddleTargetY = (leftHandAvg / videoHeight) * canvas.height - paddleHeight / 2;
     }
     if (rightCount > 0) {
-        rightPaddleTargetY = (rightHandY / rightCount) * (canvas.height / videoHeight) - paddleHeight / 2;
+        const rightHandAvg = rightHandY / rightCount;
+        rightPaddleTargetY = (rightHandAvg / videoHeight) * canvas.height - paddleHeight / 2;
     }
 
     // Ensure paddle targets stay within canvas bounds
