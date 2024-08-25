@@ -135,7 +135,6 @@ function resetGame() {
 }
 
 function gameLoop() {
-    smoothPaddleMovement();
     updateGame();
     drawGame();
     requestAnimationFrame(gameLoop);
