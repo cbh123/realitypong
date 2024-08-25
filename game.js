@@ -48,8 +48,10 @@ function drawCircle(x, y, radius, color) {
 }
 
 function drawGame() {
-    // Clear the canvas
-    drawRect(0, 0, canvas.width, canvas.height, '#000');
+    // Clear the canvas with a semi-transparent background
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw paddles
     drawRect(0, leftPaddleY, paddleWidth, paddleHeight, '#0f0');
@@ -59,9 +61,13 @@ function drawGame() {
     drawCircle(ballX, ballY, ballSize, '#0f0');
 
     // Draw center line
-    for (let i = 0; i < canvas.height; i += 40) {
-        drawRect(canvas.width / 2 - 1, i, 2, 20, '#0f0');
-    }
+    ctx.setLineDash([20, 20]);
+    ctx.beginPath();
+    ctx.moveTo(canvas.width / 2, 0);
+    ctx.lineTo(canvas.width / 2, canvas.height);
+    ctx.strokeStyle = '#0f0';
+    ctx.stroke();
+    ctx.setLineDash([]);
 }
 
 function updateGame() {

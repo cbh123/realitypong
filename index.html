@@ -18,6 +18,7 @@
         header {
             text-align: center;
             padding: 10px 0;
+            z-index: 10;
         }
         h1 {
             margin: 0;
@@ -34,23 +35,31 @@
         }
         #gameScreen {
             flex: 1;
-            display: flex;
-            flex-direction: column;
+            position: relative;
+            overflow: hidden;
         }
         #gameContainer {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
         canvas {
-            border: 2px solid #0f0;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 50%;
+            height: 100%;
+            z-index: 5;
         }
         #video {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 50%;
+            height: 100%;
+            object-fit: cover;
             transform: scaleX(-1);
         }
         #startButton {
@@ -62,8 +71,12 @@
             cursor: pointer;
         }
         #score {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
             text-align: center;
-            padding: 10px 0;
+            z-index: 10;
         }
     </style>
 </head>
@@ -77,10 +90,10 @@
     </div>
     <div id="gameScreen" style="display: none;">
         <div id="gameContainer">
-            <canvas id="gameCanvas"></canvas>
             <video id="video" autoplay playsinline></video>
+            <canvas id="gameCanvas"></canvas>
         </div>
-        <p id="score">Player 1: 0 | Player 2: 0</p>
+        <div id="score">Player 1: 0 | Player 2: 0</div>
     </div>
     <script src="game.js"></script>
 </body>
