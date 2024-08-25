@@ -233,12 +233,6 @@ function trackHands() {
     canvasElement.height = videoHeight;
     const canvasCtx = canvasElement.getContext('2d');
 
-    // Flip the video horizontally if flipVideo is true
-    if (flipVideo) {
-        canvasCtx.translate(videoWidth, 0);
-        canvasCtx.scale(-1, 1);
-    }
-
     canvasCtx.drawImage(video, 0, 0, videoWidth, videoHeight);
     const imageData = canvasCtx.getImageData(0, 0, videoWidth, videoHeight);
     const data = imageData.data;
@@ -260,7 +254,7 @@ function trackHands() {
 
             // Simple skin color detection
             if (r > 95 && g > 40 && b > 20 && r > g && r > b && r - Math.min(g, b) > 15 && Math.abs(r - g) > 15) {
-                if (x < videoWidth / 2) {
+                if (flipVideo ? (x >= videoWidth / 2) : (x < videoWidth / 2)) {
                     leftClusterSize++;
                     if (leftClusterSize > clusterThreshold && y < leftHandY) {
                         leftHandY = y;
@@ -273,7 +267,7 @@ function trackHands() {
                 }
             } else {
                 // Reset cluster sizes when we encounter a non-skin pixel
-                if (x < videoWidth / 2) {
+                if (flipVideo ? (x >= videoWidth / 2) : (x < videoWidth / 2)) {
                     leftClusterSize = 0;
                 } else {
                     rightClusterSize = 0;
