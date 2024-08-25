@@ -25,7 +25,7 @@ let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
 const ballSize = canvas.width / 100; // Reduced from 80 to 100
 let ballX = canvas.width / 2;
 let ballY = canvas.height / 2;
-const speedMultiplier = 0.2; // Reduced from 0.3 to 0.2
+const speedMultiplier = 0.4; // Increased from 0.2 to 0.4
 let ballSpeedX = canvas.width / 160 * speedMultiplier;
 let ballSpeedY = canvas.width / 160 * speedMultiplier;
 
