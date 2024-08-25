@@ -36,9 +36,12 @@ let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
 const ballSize = canvas.width / 100; // Reduced from 80 to 100
 let ballX = canvas.width / 2;
 let ballY = canvas.height / 2;
-const speedMultiplier = 0.4; // Increased from 0.2 to 0.4
-let ballSpeedX = (canvas.width / 160) * speedMultiplier;
-let ballSpeedY = (canvas.width / 160) * speedMultiplier;
+const initialSpeedMultiplier = 0.2; // Reduced initial speed
+const speedIncreaseRate = 0.05; // Speed increase after each hit
+const maxSpeedMultiplier = 0.6; // Maximum speed cap
+let currentSpeedMultiplier = initialSpeedMultiplier;
+let ballSpeedX = (canvas.width / 160) * currentSpeedMultiplier;
+let ballSpeedY = (canvas.width / 160) * currentSpeedMultiplier;
 
 function drawRect(x, y, width, height, color) {
   ctx.fillStyle = color;
@@ -108,6 +111,12 @@ function updateGame() {
   ) {
     ballSpeedX = -ballSpeedX;
     playBounceSound();
+    
+    // Increase speed after successful hit
+    currentSpeedMultiplier = Math.min(currentSpeedMultiplier + speedIncreaseRate, maxSpeedMultiplier);
+    const speedMagnitude = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
+    ballSpeedX = (ballSpeedX / speedMagnitude) * (canvas.width / 160) * currentSpeedMultiplier;
+    ballSpeedY = (ballSpeedY / speedMagnitude) * (canvas.width / 160) * currentSpeedMultiplier;
   }
 
   // Score points
@@ -127,11 +136,12 @@ function updateGame() {
 function resetBall() {
   ballX = canvas.width / 2;
   ballY = canvas.height / 2;
-  // Ensure the ball speed is correct after reset
+  // Reset speed to initial value
+  currentSpeedMultiplier = initialSpeedMultiplier;
   ballSpeedX =
-    (Math.random() > 0.5 ? 1 : -1) * (canvas.width / 160) * speedMultiplier;
+    (Math.random() > 0.5 ? 1 : -1) * (canvas.width / 160) * currentSpeedMultiplier;
   ballSpeedY =
-    (Math.random() > 0.5 ? 1 : -1) * (canvas.width / 160) * speedMultiplier;
+    (Math.random() > 0.5 ? 1 : -1) * (canvas.width / 160) * currentSpeedMultiplier;
 }
 
 const startButton = document.getElementById("startButton");
