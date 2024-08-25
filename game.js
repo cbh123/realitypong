@@ -64,7 +64,7 @@ function drawGame() {
     ctx.setLineDash([]);
 
     // Draw debug information
-    drawDebugInfo(leftPaddleTargetY + paddleHeight / 2, rightPaddleTargetY + paddleHeight / 2);
+    drawDebugInfo(leftPaddleY + paddleHeight / 2, rightPaddleY + paddleHeight / 2);
 }
 
 function updateGame() {
