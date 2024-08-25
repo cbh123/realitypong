@@ -16,12 +16,9 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 const paddleWidth = 10;
-const paddleHeight = canvas.height / 4;
+const paddleHeight = canvas.height / 3; // Increased paddle height
 let leftPaddleY = canvas.height / 2 - paddleHeight / 2;
 let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
-let leftPaddleTargetY = leftPaddleY;
-let rightPaddleTargetY = rightPaddleY;
-const paddleSmoothingFactor = 0.3;
 
 // Removed smoothPaddleMovement function as we'll update paddle positions directly
 
@@ -177,13 +174,6 @@ function drawDebugInfo(leftHandY, rightHandY) {
     ctx.beginPath();
     ctx.arc(canvas.width - paddleWidth, rightHandY, 5, 0, Math.PI * 2);
     ctx.fill();
-
-    // Draw line to show where scanning starts
-    ctx.beginPath();
-    ctx.moveTo(0, canvas.height / 2);
-    ctx.lineTo(canvas.width, canvas.height / 2);
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-    ctx.stroke();
 }
 
 // Initialize webcam
@@ -256,14 +246,12 @@ function trackHands() {
     let leftHandY = videoHeight;
     let rightHandY = videoHeight;
     
-    // Only scan the lower half of the video
-    const startY = Math.floor(videoHeight / 2);
     const clusterThreshold = 50; // Minimum number of skin pixels to be considered a hand
 
     let leftClusterSize = 0;
     let rightClusterSize = 0;
 
-    for (let y = startY; y < videoHeight; y++) {
+    for (let y = 0; y < videoHeight; y++) {
         for (let x = 0; x < videoWidth; x++) {
             const i = (y * videoWidth + x) * 4;
             const r = data[i];
@@ -294,21 +282,16 @@ function trackHands() {
         }
     }
 
-    // Calculate paddle positions with improved scaling
-    const leftHandCanvasY = ((leftHandY - startY) / (videoHeight - startY)) * canvas.height;
-    const rightHandCanvasY = ((rightHandY - startY) / (videoHeight - startY)) * canvas.height;
-
-    // Use exponential moving average for smoother paddle movement
-    const smoothingFactor = 0.3;
-    leftPaddleY = leftPaddleY * (1 - smoothingFactor) + (leftHandCanvasY - paddleHeight / 2) * smoothingFactor;
-    rightPaddleY = rightPaddleY * (1 - smoothingFactor) + (rightHandCanvasY - paddleHeight / 2) * smoothingFactor;
+    // Directly map hand positions to paddle positions
+    leftPaddleY = (leftHandY / videoHeight) * canvas.height - paddleHeight / 2;
+    rightPaddleY = (rightHandY / videoHeight) * canvas.height - paddleHeight / 2;
 
     // Ensure paddle positions stay within canvas bounds
     leftPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddleY));
     rightPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddleY));
 
     // Debug visualization
-    drawDebugInfo(leftHandCanvasY, rightHandCanvasY);
+    drawDebugInfo(leftHandY / videoHeight * canvas.height, rightHandY / videoHeight * canvas.height);
 }
 
 // Start the webcam
