@@ -1,3 +1,14 @@
+// Request camera permissions first
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then((stream) => {
+    const video = document.getElementById("video");
+    video.srcObject = stream;
+    video.play();
+  })
+  .catch((err) => {
+    console.error("Error accessing the webcam", err);
+  });
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const video = document.getElementById("video");
@@ -142,10 +153,20 @@ function startGame() {
   });
   document.body.appendChild(flipButton);
 
+  // Initialize audio context and play start sound
+  initializeAudio();
   playStartSound();
+
   resetGame();
   gameLoop();
   setInterval(trackHands, 50); // Track hands more frequently (every 50ms)
+}
+
+// Initialize audio context
+let audioContext;
+
+function initializeAudio() {
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
 }
 
 function resetGame() {
@@ -211,10 +232,9 @@ navigator.mediaDevices
     console.error("Error accessing the webcam", err);
   });
 
-// Audio context
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
 function playSound(frequency, duration) {
+  if (!audioContext) return; // Don't play sound if audio context is not initialized
+
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
 
