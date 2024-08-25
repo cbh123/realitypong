@@ -177,6 +177,13 @@ function drawDebugInfo(leftHandY, rightHandY) {
     ctx.beginPath();
     ctx.arc(canvas.width - paddleWidth, rightHandY, 5, 0, Math.PI * 2);
     ctx.fill();
+
+    // Draw line to show where scanning starts
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height / 2);
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.stroke();
 }
 
 // Initialize webcam
@@ -248,8 +255,15 @@ function trackHands() {
 
     let leftHandY = videoHeight;
     let rightHandY = videoHeight;
+    
+    // Only scan the lower half of the video
+    const startY = Math.floor(videoHeight / 2);
+    const clusterThreshold = 50; // Minimum number of skin pixels to be considered a hand
 
-    for (let y = 0; y < videoHeight; y++) {
+    let leftClusterSize = 0;
+    let rightClusterSize = 0;
+
+    for (let y = startY; y < videoHeight; y++) {
         for (let x = 0; x < videoWidth; x++) {
             const i = (y * videoWidth + x) * 4;
             const r = data[i];
@@ -258,18 +272,31 @@ function trackHands() {
 
             // Simple skin color detection
             if (r > 95 && g > 40 && b > 20 && r > g && r > b && r - Math.min(g, b) > 15 && Math.abs(r - g) > 15) {
-                if (x < videoWidth / 2 && y < leftHandY) {
-                    leftHandY = y;
-                } else if (x >= videoWidth / 2 && y < rightHandY) {
-                    rightHandY = y;
+                if (x < videoWidth / 2) {
+                    leftClusterSize++;
+                    if (leftClusterSize > clusterThreshold && y < leftHandY) {
+                        leftHandY = y;
+                    }
+                } else {
+                    rightClusterSize++;
+                    if (rightClusterSize > clusterThreshold && y < rightHandY) {
+                        rightHandY = y;
+                    }
+                }
+            } else {
+                // Reset cluster sizes when we encounter a non-skin pixel
+                if (x < videoWidth / 2) {
+                    leftClusterSize = 0;
+                } else {
+                    rightClusterSize = 0;
                 }
             }
         }
     }
 
     // Calculate paddle positions with improved scaling
-    const leftHandCanvasY = (leftHandY / videoHeight) * canvas.height;
-    const rightHandCanvasY = (rightHandY / videoHeight) * canvas.height;
+    const leftHandCanvasY = ((leftHandY - startY) / (videoHeight - startY)) * canvas.height;
+    const rightHandCanvasY = ((rightHandY - startY) / (videoHeight - startY)) * canvas.height;
 
     // Use exponential moving average for smoother paddle movement
     const smoothingFactor = 0.3;
