@@ -119,10 +119,21 @@ function startGame() {
     document.getElementById('startButton').style.display = 'none';
     document.getElementById('gameScreen').style.display = 'block';
     
+    // Add flip video button
+    const flipButton = document.createElement('button');
+    flipButton.textContent = 'Flip Video';
+    flipButton.style.position = 'absolute';
+    flipButton.style.top = '10px';
+    flipButton.style.left = '10px';
+    flipButton.addEventListener('click', () => {
+        flipVideo = !flipVideo;
+    });
+    document.body.appendChild(flipButton);
+    
     playStartSound();
     resetGame();
     gameLoop();
-    setInterval(trackHands, 100); // Track hands every 100ms
+    setInterval(trackHands, 50); // Track hands more frequently (every 50ms)
 }
 
 function resetGame() {
@@ -144,9 +155,19 @@ function drawDebugInfo(leftHandY, rightHandY) {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     ctx.font = '14px Arial';
 
+    // Draw video dimensions
+    ctx.fillText(`Video: ${video.videoWidth}x${video.videoHeight}`, 10, 20);
+    
+    // Draw canvas dimensions
+    ctx.fillText(`Canvas: ${canvas.width}x${canvas.height}`, 10, 40);
+
     // Draw hand positions
-    ctx.fillText(`Left Hand: ${Math.round(leftHandY)}`, 10, 20);
-    ctx.fillText(`Right Hand: ${Math.round(rightHandY)}`, canvas.width - 150, 20);
+    ctx.fillText(`Left Hand: ${Math.round(leftHandY)}`, 10, 60);
+    ctx.fillText(`Right Hand: ${Math.round(rightHandY)}`, canvas.width - 150, 60);
+
+    // Draw paddle positions
+    ctx.fillText(`Left Paddle: ${Math.round(leftPaddleY)}`, 10, 80);
+    ctx.fillText(`Right Paddle: ${Math.round(rightPaddleY)}`, canvas.width - 150, 80);
 
     // Draw debug circles for hand positions
     ctx.beginPath();
@@ -199,23 +220,27 @@ function playStartSound() {
 }
 
 // Simplified hand tracking
-function trackHands() {
-    console.log('trackHands called'); // Debug log
+let flipVideo = true; // New variable to control video flipping
 
+function trackHands() {
     const videoWidth = video.videoWidth;
     const videoHeight = video.videoHeight;
 
     if (videoWidth === 0 || videoHeight === 0) {
-        console.log('Video dimensions are zero. Video might not be ready.'); // Debug log
+        console.log('Video dimensions are zero. Video might not be ready.');
         return;
     }
-
-    console.log(`Video dimensions: ${videoWidth}x${videoHeight}`); // Debug log
 
     const canvasElement = document.createElement('canvas');
     canvasElement.width = videoWidth;
     canvasElement.height = videoHeight;
     const canvasCtx = canvasElement.getContext('2d');
+
+    // Flip the video horizontally if flipVideo is true
+    if (flipVideo) {
+        canvasCtx.translate(videoWidth, 0);
+        canvasCtx.scale(-1, 1);
+    }
 
     canvasCtx.drawImage(video, 0, 0, videoWidth, videoHeight);
     const imageData = canvasCtx.getImageData(0, 0, videoWidth, videoHeight);
@@ -223,7 +248,6 @@ function trackHands() {
 
     let leftHandY = videoHeight;
     let rightHandY = videoHeight;
-    let skinPixelsDetected = 0; // Debug counter
 
     for (let y = 0; y < videoHeight; y++) {
         for (let x = 0; x < videoWidth; x++) {
@@ -234,8 +258,6 @@ function trackHands() {
 
             // Simple skin color detection
             if (r > 95 && g > 40 && b > 20 && r > g && r > b && r - Math.min(g, b) > 15 && Math.abs(r - g) > 15) {
-                skinPixelsDetected++; // Debug counter
-                // Account for mirrored video
                 if (x < videoWidth / 2 && y < leftHandY) {
                     leftHandY = y;
                 } else if (x >= videoWidth / 2 && y < rightHandY) {
@@ -245,21 +267,21 @@ function trackHands() {
         }
     }
 
-    console.log(`Skin-colored pixels detected: ${skinPixelsDetected}`); // Debug log
-    console.log(`Left hand Y: ${leftHandY}, Right hand Y: ${rightHandY}`); // Debug log
+    // Calculate paddle positions with improved scaling
+    const leftHandCanvasY = (leftHandY / videoHeight) * canvas.height;
+    const rightHandCanvasY = (rightHandY / videoHeight) * canvas.height;
 
-    // Update paddle positions directly based on hand positions
-    leftPaddleY = (leftHandY / videoHeight) * canvas.height - paddleHeight / 2;
-    rightPaddleY = (rightHandY / videoHeight) * canvas.height - paddleHeight / 2;
+    // Use exponential moving average for smoother paddle movement
+    const smoothingFactor = 0.3;
+    leftPaddleY = leftPaddleY * (1 - smoothingFactor) + (leftHandCanvasY - paddleHeight / 2) * smoothingFactor;
+    rightPaddleY = rightPaddleY * (1 - smoothingFactor) + (rightHandCanvasY - paddleHeight / 2) * smoothingFactor;
 
     // Ensure paddle positions stay within canvas bounds
     leftPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddleY));
     rightPaddleY = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddleY));
 
-    console.log(`Updated paddle positions - Left: ${leftPaddleY}, Right: ${rightPaddleY}`); // Debug log
-
     // Debug visualization
-    drawDebugInfo((leftHandY / videoHeight) * canvas.height, (rightHandY / videoHeight) * canvas.height);
+    drawDebugInfo(leftHandCanvasY, rightHandCanvasY);
 }
 
 // Start the webcam
