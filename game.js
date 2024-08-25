@@ -22,7 +22,7 @@ function smoothPaddleMovement() {
 const ballSize = 10;
 let ballX = canvas.width / 2;
 let ballY = canvas.height / 2;
-const speedMultiplier = 0.5; // New variable for easy speed adjustment
+const speedMultiplier = 0.3; // Reduced from 0.5 to slow down the ball
 let ballSpeedX = 5 * speedMultiplier;
 let ballSpeedY = 5 * speedMultiplier;
 
@@ -91,9 +91,8 @@ function updateGame() {
 function resetBall() {
     ballX = canvas.width / 2;
     ballY = canvas.height / 2;
-    ballSpeedX = -ballSpeedX;
     // Ensure the ball speed is correct after reset
-    ballSpeedX = Math.sign(ballSpeedX) * 5 * speedMultiplier;
+    ballSpeedX = (Math.random() > 0.5 ? 1 : -1) * 5 * speedMultiplier;
     ballSpeedY = (Math.random() > 0.5 ? 1 : -1) * 5 * speedMultiplier;
 }
 
