@@ -148,6 +148,16 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
+function drawHandIndicator(x, y) {
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
+    ctx.fill();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+}
+
 function drawDebugInfo(leftHandY, rightHandY) {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     ctx.font = '14px Arial';
@@ -166,14 +176,9 @@ function drawDebugInfo(leftHandY, rightHandY) {
     ctx.fillText(`Left Paddle: ${Math.round(leftPaddleY)}`, 10, 80);
     ctx.fillText(`Right Paddle: ${Math.round(rightPaddleY)}`, canvas.width - 150, 80);
 
-    // Draw debug circles for hand positions
-    ctx.beginPath();
-    ctx.arc(paddleWidth, leftHandY, 5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(canvas.width - paddleWidth, rightHandY, 5, 0, Math.PI * 2);
-    ctx.fill();
+    // Draw hand indicators
+    drawHandIndicator(paddleWidth, leftHandY);
+    drawHandIndicator(canvas.width - paddleWidth, rightHandY);
 }
 
 // Initialize webcam
