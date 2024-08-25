@@ -68,6 +68,9 @@ function drawGame() {
     ctx.strokeStyle = '#0f0';
     ctx.stroke();
     ctx.setLineDash([]);
+
+    // Draw debug information
+    drawDebugInfo(leftPaddleTargetY + paddleHeight / 2, rightPaddleTargetY + paddleHeight / 2);
 }
 
 function updateGame() {
@@ -122,7 +125,7 @@ function startGame() {
     playStartSound();
     resetGame();
     gameLoop();
-    setInterval(trackHands, 200); // Track hands every 200ms (slower)
+    setInterval(trackHands, 100); // Track hands every 100ms
 }
 
 function resetGame() {
