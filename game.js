@@ -242,13 +242,8 @@ function trackHands() {
     const imageData = canvasCtx.getImageData(0, 0, videoWidth, videoHeight);
     const data = imageData.data;
 
-    let leftHandY = videoHeight;
-    let rightHandY = videoHeight;
-    
-    const clusterThreshold = 50; // Minimum number of skin pixels to be considered a hand
-
-    let leftClusterSize = 0;
-    let rightClusterSize = 0;
+    const leftHeatMap = new Array(videoHeight).fill(0);
+    const rightHeatMap = new Array(videoHeight).fill(0);
 
     for (let y = 0; y < videoHeight; y++) {
         for (let x = 0; x < videoWidth; x++) {
@@ -260,28 +255,18 @@ function trackHands() {
             // Simple skin color detection
             if (r > 95 && g > 40 && b > 20 && r > g && r > b && r - Math.min(g, b) > 15 && Math.abs(r - g) > 15) {
                 if (flipVideo ? (x >= videoWidth / 2) : (x < videoWidth / 2)) {
-                    leftClusterSize++;
-                    if (leftClusterSize > clusterThreshold && y < leftHandY) {
-                        leftHandY = y;
-                    }
+                    leftHeatMap[y]++;
                 } else {
-                    rightClusterSize++;
-                    if (rightClusterSize > clusterThreshold && y < rightHandY) {
-                        rightHandY = y;
-                    }
-                }
-            } else {
-                // Reset cluster sizes when we encounter a non-skin pixel
-                if (flipVideo ? (x >= videoWidth / 2) : (x < videoWidth / 2)) {
-                    leftClusterSize = 0;
-                } else {
-                    rightClusterSize = 0;
+                    rightHeatMap[y]++;
                 }
             }
         }
     }
 
-    // Directly map hand positions to paddle positions
+    const leftHandY = findLargestClusterCenter(leftHeatMap);
+    const rightHandY = findLargestClusterCenter(rightHeatMap);
+
+    // Map hand positions to paddle positions, allowing full range of motion
     leftPaddleY = (leftHandY / videoHeight) * canvas.height - paddleHeight / 2;
     rightPaddleY = (rightHandY / videoHeight) * canvas.height - paddleHeight / 2;
 
@@ -291,6 +276,39 @@ function trackHands() {
 
     // Debug visualization
     drawDebugInfo(leftHandY / videoHeight * canvas.height, rightHandY / videoHeight * canvas.height);
+}
+
+function findLargestClusterCenter(heatMap) {
+    let maxClusterSize = 0;
+    let clusterStart = 0;
+    let clusterEnd = 0;
+    let currentClusterSize = 0;
+    let currentClusterStart = 0;
+
+    for (let i = 0; i < heatMap.length; i++) {
+        if (heatMap[i] > 0) {
+            if (currentClusterSize === 0) {
+                currentClusterStart = i;
+            }
+            currentClusterSize += heatMap[i];
+        } else if (currentClusterSize > 0) {
+            if (currentClusterSize > maxClusterSize) {
+                maxClusterSize = currentClusterSize;
+                clusterStart = currentClusterStart;
+                clusterEnd = i - 1;
+            }
+            currentClusterSize = 0;
+        }
+    }
+
+    // Check if the last cluster is the largest
+    if (currentClusterSize > maxClusterSize) {
+        clusterStart = currentClusterStart;
+        clusterEnd = heatMap.length - 1;
+    }
+
+    // Return the center of the largest cluster
+    return (clusterStart + clusterEnd) / 2;
 }
 
 // Start the webcam
