@@ -6,25 +6,34 @@ const scoreElement = document.getElementById('score');
 let player1Score = 0;
 let player2Score = 0;
 
+// Set canvas size
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight / 2;
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
 const paddleWidth = 10;
-const paddleHeight = 100;
+const paddleHeight = canvas.height / 4;
 let leftPaddleY = canvas.height / 2 - paddleHeight / 2;
 let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
 let leftPaddleTargetY = leftPaddleY;
 let rightPaddleTargetY = rightPaddleY;
-const paddleSmoothingFactor = 0.2; // Adjust this value to change smoothing speed (0-1)
+const paddleSmoothingFactor = 0.2;
 
 function smoothPaddleMovement() {
     leftPaddleY += (leftPaddleTargetY - leftPaddleY) * paddleSmoothingFactor;
     rightPaddleY += (rightPaddleTargetY - rightPaddleY) * paddleSmoothingFactor;
 }
 
-const ballSize = 10;
+const ballSize = canvas.width / 80;
 let ballX = canvas.width / 2;
 let ballY = canvas.height / 2;
-const speedMultiplier = 0.3; // Reduced from 0.5 to slow down the ball
-let ballSpeedX = 5 * speedMultiplier;
-let ballSpeedY = 5 * speedMultiplier;
+const speedMultiplier = 0.3;
+let ballSpeedX = canvas.width / 160 * speedMultiplier;
+let ballSpeedY = canvas.width / 160 * speedMultiplier;
 
 function drawRect(x, y, width, height, color) {
     ctx.fillStyle = color;
@@ -92,8 +101,8 @@ function resetBall() {
     ballX = canvas.width / 2;
     ballY = canvas.height / 2;
     // Ensure the ball speed is correct after reset
-    ballSpeedX = (Math.random() > 0.5 ? 1 : -1) * 5 * speedMultiplier;
-    ballSpeedY = (Math.random() > 0.5 ? 1 : -1) * 5 * speedMultiplier;
+    ballSpeedX = (Math.random() > 0.5 ? 1 : -1) * (canvas.width / 160) * speedMultiplier;
+    ballSpeedY = (Math.random() > 0.5 ? 1 : -1) * (canvas.width / 160) * speedMultiplier;
 }
 
 const startButton = document.getElementById('startButton');
